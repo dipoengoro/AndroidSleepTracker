@@ -1,5 +1,6 @@
 package id.dipoengoro.sleeptracker.database
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -17,10 +18,10 @@ abstract class SleepDatabase : RoomDatabase() {
         private var INSTANCE: SleepDatabase? = null
 
         @InternalCoroutinesApi
-        fun getInstance(context: Context): SleepDatabase =
+        fun getInstance(app: Application): SleepDatabase =
             INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
+                    app,
                     SleepDatabase::class.java,
                     "sleep_history_database")
                     .fallbackToDestructiveMigration()

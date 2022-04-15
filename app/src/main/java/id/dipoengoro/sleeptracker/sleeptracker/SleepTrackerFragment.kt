@@ -10,11 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import id.dipoengoro.sleeptracker.R
 import id.dipoengoro.sleeptracker.database.SleepDatabase
 import id.dipoengoro.sleeptracker.databinding.FragmentSleepTrackerBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
+@InternalCoroutinesApi
 class SleepTrackerFragment : Fragment() {
 
-    @InternalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,7 +30,7 @@ class SleepTrackerFragment : Fragment() {
         val dataSource = SleepDatabase.getInstance(application).sleepDatabaseDao
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
         val sleepTrackerViewModel = ViewModelProvider(this, viewModelFactory)[
-            SleepTrackerViewModel::class.java
+                SleepTrackerViewModel::class.java
         ]
         binding.apply {
             this.sleepTrackerViewModel = sleepTrackerViewModel
