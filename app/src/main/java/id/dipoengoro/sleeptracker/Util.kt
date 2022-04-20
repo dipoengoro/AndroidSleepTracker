@@ -5,7 +5,9 @@ import android.content.res.Resources
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.RecyclerView
 import id.dipoengoro.sleeptracker.database.SleepNight
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
@@ -55,4 +57,6 @@ fun formatNights(nights: List<SleepNight>, resources: Resources): Spanned {
         HtmlCompat.fromHtml(stringBuilder.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
     }
 }
+
+class TextItemViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 

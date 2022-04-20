@@ -13,5 +13,5 @@ data class SleepNight(
     @ColumnInfo(name = "end_time_milli")
     var endTimeMilli: Long = startTimeMilli,
     @ColumnInfo(name = "quality_time")
-    val sleepQuality: Int = -1
+    var sleepQuality: Int = -1
 )
