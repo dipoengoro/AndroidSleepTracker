@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import id.dipoengoro.sleeptracker.database.SleepNight
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
+
+private val ONE_MINUTE_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
+private val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
 
 fun convertNumericQualityToString(quality: Int, resources: Resources): String {
     var qualityString = resources.getString(R.string.three_ok)
@@ -23,6 +28,31 @@ fun convertNumericQualityToString(quality: Int, resources: Resources): String {
         5 -> qualityString = resources.getString(R.string.five_excellent)
     }
     return qualityString
+}
+
+private fun weekdayString(startTimeMilli: Long) =
+    SimpleDateFormat("EEEE", Locale.getDefault()).format(startTimeMilli)
+
+private fun getTheCorrectConverter(type: TimeUnit, sourceDuration: Long) =
+    type.convert(sourceDuration, TimeUnit.MILLISECONDS)
+
+fun convertDurationToFormatted(startTimeMilli: Long, endTimeMilli: Long, res: Resources): String {
+    (endTimeMilli - startTimeMilli).apply {
+        SimpleDateFormat("EEEE", Locale.getDefault()).format(startTimeMilli)
+            .also { weekday ->
+                return when {
+                    this < ONE_MINUTE_MILLIS -> getTheCorrectConverter(TimeUnit.SECONDS, this).let {
+                        res.getString(R.string.seconds_length, it, weekday)
+                    }
+                    this < ONE_HOUR_MILLIS -> getTheCorrectConverter(TimeUnit.MINUTES, this).let {
+                        res.getString(R.string.minutes_length, it, weekday)
+                    }
+                    else -> getTheCorrectConverter(TimeUnit.HOURS, this).let {
+                        res.getString(R.string.hours_length, it, weekday)
+                    }
+                }
+            }
+    }
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -57,6 +87,4 @@ fun formatNights(nights: List<SleepNight>, resources: Resources): Spanned {
         HtmlCompat.fromHtml(stringBuilder.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
     }
 }
-
-class TextItemViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)
 

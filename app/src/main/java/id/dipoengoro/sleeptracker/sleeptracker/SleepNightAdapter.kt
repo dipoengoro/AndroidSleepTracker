@@ -1,39 +1,53 @@
 package id.dipoengoro.sleeptracker.sleeptracker
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import id.dipoengoro.sleeptracker.R
-import id.dipoengoro.sleeptracker.TextItemViewHolder
+import id.dipoengoro.sleeptracker.convertDurationToFormatted
+import id.dipoengoro.sleeptracker.convertNumericQualityToString
 import id.dipoengoro.sleeptracker.database.SleepNight
+import id.dipoengoro.sleeptracker.databinding.ListItemSleepNightBinding
 
-class SleepNightAdapter : RecyclerView.Adapter<TextItemViewHolder>() {
+class SleepNightAdapter :
+    ListAdapter<SleepNight, SleepNightAdapter.ViewHolder>(SleepNightDiffCallback()) {
 
-    var data = listOf<SleepNight>()
-        @SuppressLint("NotifyDataSetChanged")
-        set(value) {
-            field = value
-            notifyDataSetChanged()
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(getItem(position))
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder.from(parent)
+
+    class ViewHolder(private val binding: ListItemSleepNightBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder =
+                ViewHolder(
+                    ListItemSleepNightBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+
         }
 
-    override fun getItemCount() = data.size
-
-    override fun onBindViewHolder(holder: TextItemViewHolder, position: Int) =
-        data[position].let {
-            if (it.sleepQuality <= 1) {
-                holder.textView.setTextColor(Color.RED)
-            } else {
-                holder.textView.setTextColor(Color.BLACK)
-            }
-            holder.textView.text = it.sleepQuality.toString()
+        fun bind(item: SleepNight) = with(binding) {
+            sleep = item    
+            executePendingBindings()
         }
+    }
+}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextItemViewHolder =
-        TextItemViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.text_item_view, parent, false) as TextView
-        )
+class SleepNightDiffCallback : DiffUtil.ItemCallback<SleepNight>() {
+    override fun areItemsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean =
+        oldItem.nightId == newItem.nightId
+
+    override fun areContentsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean =
+        oldItem == newItem
 }
