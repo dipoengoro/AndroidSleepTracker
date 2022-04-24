@@ -3,7 +3,9 @@ package id.dipoengoro.sleeptracker.sleeptracker
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import id.dipoengoro.sleeptracker.R
 import id.dipoengoro.sleeptracker.convertDurationToFormatted
@@ -50,5 +52,16 @@ fun ImageView.setSleepImage(item: SleepNight?) =
 @BindingAdapter("listSleep")
 fun RecyclerView.setListSleep(item: List<SleepNight>?) =
     item?.run {
-        (adapter as SleepNightAdapter).submitList(this)
+        (adapter as SleepNightAdapter).addHeaderAndSubmitList(this)
+        GridLayoutManager(context, 3).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) = when (position) {
+                    0 -> 3
+                    else -> 1
+                }
+            }
+        }.also {
+            layoutManager = it
+        }
+
     }

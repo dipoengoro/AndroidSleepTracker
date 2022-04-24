@@ -8,13 +8,18 @@
         <variable
             name="sleep"
             type="id.dipoengoro.sleeptracker.database.SleepNight" />
+
+        <variable
+            name="itemClickListener"
+            type="id.dipoengoro.sleeptracker.sleeptracker.SleepNightListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
-        android:layout_marginVertical="8dp">
+        android:layout_marginVertical="8dp"
+        android:onClick="@{() -> itemClickListener.onCLick(sleep)}">
 
         <ImageView
             android:id="@+id/image_sleep_night"

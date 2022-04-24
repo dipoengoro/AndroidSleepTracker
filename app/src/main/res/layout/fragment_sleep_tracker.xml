@@ -23,8 +23,6 @@
             android:paddingEnd="4dp"
             app:listSleep="@{sleepTrackerViewModel.nights}"
             android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
             app:layout_constraintBottom_toTopOf="@id/clear_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import id.dipoengoro.sleeptracker.R
 import id.dipoengoro.sleeptracker.database.SleepDatabase
 import id.dipoengoro.sleeptracker.databinding.FragmentSleepTrackerBinding
+import id.dipoengoro.sleeptracker.sleepdetail.SleepDetailFragmentArgs
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
@@ -32,7 +34,12 @@ class SleepTrackerFragment : Fragment() {
         ]
         binding.apply {
             this.sleepTrackerViewModel = sleepTrackerViewModel
-            sleepList.adapter = SleepNightAdapter()
+            SleepNightAdapter(SleepNightListener {
+                    sleepTrackerViewModel.onSleepNightClicked(it)
+                }
+            ).also {
+                sleepList.adapter = it
+            }
             lifecycleOwner = viewLifecycleOwner
         }
         sleepTrackerViewModel.apply {
@@ -43,6 +50,15 @@ class SleepTrackerFragment : Fragment() {
                             .actionSleepTrackerFragmentToSleepQualityFragment(it.nightId)
                     )
                     doneNavigating()
+                }
+            }
+            navigateToSleepDataQuality.observe(viewLifecycleOwner) {
+                it?.let {
+                    this@SleepTrackerFragment.findNavController().navigate(
+                        SleepTrackerFragmentDirections
+                            .actionSleepTrackerFragmentToSleepDetailFragment(it)
+                    )
+                    onSleepDataQualityNavigated()
                 }
             }
         }
